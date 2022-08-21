@@ -2,6 +2,7 @@ package rockscache
 
 import (
 	"context"
+	"errors"
 	"log"
 	"runtime/debug"
 	"time"
@@ -32,7 +33,8 @@ type redisConn interface {
 func callLua(ctx context.Context, rdb redisConn, script string, keys []string, args []interface{}) (interface{}, error) {
 	debugf("callLua: script=%s, keys=%v, args=%v", script, keys, args)
 	v, err := rdb.Eval(ctx, script, keys, args).Result()
-	if err == redis.Nil {
+	// 使用redis的hook，会导致报错被wrap，需要用errors.Is
+	if errors.Is(err, redis.Nil) {
 		err = nil
 	}
 	debugf("callLua result: v=%v, err=%v", v, err)

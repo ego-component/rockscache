@@ -1,4 +1,4 @@
-module github.com/dtm-labs/rockscache
+module github.com/ego-component/rockscache
 
 go 1.17
 
